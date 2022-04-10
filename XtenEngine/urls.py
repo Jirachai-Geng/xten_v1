@@ -19,4 +19,5 @@ from django.urls import re_path, include
 urlpatterns = [
     re_path(r'^', include('Apps.Energy.power_quality.urls')),
     re_path(r'^', include('Apps.Energy.explore.urls')),
+    re_path(r'^', include('Apps.Authen.urls')),
 ]

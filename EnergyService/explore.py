@@ -1,21 +1,21 @@
 import psycopg2
 import requests
 from django.http import JsonResponse
-from XtenEngine.settings import CONNECTION
 from XtenEngine.common_util import ResponseMessage
-import datetime
-import time
+from Apps.Authen.credentials import AuthenticateCredentials
 
 
 class ExploreService:
     def __init__(self, **kwargs):
         self.requests = requests
+        self.token = kwargs.get('token', '')
+        self.user_info = AuthenticateCredentials(self.token)
+        self.connection = self.user_info['connection']
 
-    @staticmethod
-    def search_public_sensorTreeDiagram():
+    def search_public_sensorTreeDiagram(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = "SELECT * FROM public.sensors;"
             cursor.execute(query)
@@ -48,11 +48,10 @@ class ExploreService:
 
         return response_return.get_response()
 
-    @staticmethod
-    def search_public_parameterMdb():
+    def search_public_parameterMdb(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = """SELECT column_name
                     FROM information_schema.columns
@@ -76,11 +75,10 @@ class ExploreService:
 
         return response_return.get_response()
 
-    @staticmethod
-    def search_public_parameterMeter():
+    def search_public_parameterMeter(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = """SELECT column_name
                     FROM information_schema.columns
@@ -104,8 +102,7 @@ class ExploreService:
 
         return response_return.get_response()
 
-    @staticmethod
-    def explore_data(request_data):
+    def explore_data(self, request_data):
         response_return = ResponseMessage()
         parameter = request_data.get('parameter')
         table = request_data.get('type')
@@ -113,7 +110,7 @@ class ExploreService:
         start_time = request_data.get('start_time')
         end_time = request_data.get('end_time')
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             data = (int(sensor_id), start_time, end_time)
             query = """SELECT to_char(time, 'DD/MM/YYYY HH24:MI:SS') as time, {} as data FROM {} where sensor_id = %s and time between %s and %s order by time desc;""".format(parameter,table)

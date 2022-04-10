@@ -18,7 +18,7 @@ class ExploreData(APIView):
         request_data['start_time'] = request.GET.get('start_time', '')
         request_data['end_time'] = request.GET.get('end_time', '')
         try:
-            response_return = ExploreService(request=request).explore_data(request_data)
+            response_return = ExploreService(request=request, token=request.META['HTTP_AUTHORIZATION']).explore_data(request_data)
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')
@@ -30,7 +30,7 @@ class SearchPublicSensorTreeDiagram(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = ExploreService(request=request).search_public_sensorTreeDiagram()
+            response_return = ExploreService(request=request, token=request.META['HTTP_AUTHORIZATION']).search_public_sensorTreeDiagram()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')
@@ -42,7 +42,7 @@ class SearchPublicParameterMdb(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = ExploreService(request=request).search_public_parameterMdb()
+            response_return = ExploreService(request=request, token=request.META['HTTP_AUTHORIZATION']).search_public_parameterMdb()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')
@@ -54,7 +54,7 @@ class SearchPublicParameterMeter(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = ExploreService(request=request).search_public_parameterMeter()
+            response_return = ExploreService(request=request, token=request.META['HTTP_AUTHORIZATION']).search_public_parameterMeter()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')

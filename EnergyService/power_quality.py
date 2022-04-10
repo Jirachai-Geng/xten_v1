@@ -1,19 +1,23 @@
+import token
+
 import psycopg2
 import requests
 from django.http import JsonResponse
-from XtenEngine.settings import CONNECTION
 from XtenEngine.common_util import ResponseMessage
+from Apps.Authen.credentials import AuthenticateCredentials
 
 
 class PowerQualityService:
     def __init__(self, **kwargs):
         self.requests = requests
+        self.token = kwargs.get('token', '')
+        self.user_info = AuthenticateCredentials(self.token)
+        self.connection = self.user_info['connection']
 
-    @staticmethod
-    def getDataMdb():
+    def getDataMdb(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = "SELECT tt.* FROM public.mdb tt INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime " \
                     "FROM public.mdb GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id " \
@@ -33,11 +37,10 @@ class PowerQualityService:
 
         return response_return.get_response()
 
-    @staticmethod
-    def getDataSensor():
+    def getDataSensor(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = "SELECT tt.* FROM public.meter tt INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime " \
                     "FROM public.meter GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id " \
@@ -57,11 +60,10 @@ class PowerQualityService:
 
         return response_return.get_response()
 
-    @staticmethod
-    def search_public_sensorMdb():
+    def search_public_sensorMdb(self):
         response_return = ResponseMessage()
         try:
-            conn = psycopg2.connect(CONNECTION)
+            conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             query = """SELECT sensor_id, name, type, location
                     FROM public.sensors

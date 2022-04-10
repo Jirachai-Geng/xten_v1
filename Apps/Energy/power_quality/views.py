@@ -12,7 +12,7 @@ class PowerQuality(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = PowerQualityService(request=request).getDataMdb()
+            response_return = PowerQualityService(request=request, token=request.META['HTTP_AUTHORIZATION']).getDataMdb()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')
@@ -24,7 +24,7 @@ class AllMeter(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = PowerQualityService(request=request).getDataSensor()
+            response_return = PowerQualityService(request=request, token=request.META['HTTP_AUTHORIZATION']).getDataSensor()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')
@@ -36,7 +36,7 @@ class SearchPublicSensorMdb(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = PowerQualityService(request=request).search_public_sensorMdb()
+            response_return = PowerQualityService(request=request, token=request.META['HTTP_AUTHORIZATION']).search_public_sensorMdb()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')

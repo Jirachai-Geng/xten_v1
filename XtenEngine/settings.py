@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w7_=pr$&02c(^o)zax2u7f(!&b=13lq^(nadhdqz#i&t__4628'
+SECRET_KEY = b'mCKtKwiEo9uJun717pe0mhCYvxh0mkTp_RO--aIj7-I='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -82,7 +82,7 @@ DATABASES = {
     }
 }
 
-CONNECTION = "postgres://adminxten:xten1234@localhost:5432/test"
+CONNECTION = "postgres://adminxten:xten1234@localhost:5432/xtenv1"
 
 
 # Password validation
