@@ -19,9 +19,9 @@ class PowerQualityService:
         try:
             conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
-            query = "SELECT tt.* FROM public.mdb tt INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime " \
-                    "FROM public.mdb GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id " \
-                    "AND tt.time = groupedtt.MaxDateTime"
+            query = """SELECT tt.* FROM public.mdb tt INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime 
+                    FROM public.mdb GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id 
+                    AND tt.time = groupedtt.MaxDateTime"""
             cursor.execute(query)
             records = cursor.fetchall()
             selectObject = []
@@ -37,14 +37,20 @@ class PowerQualityService:
 
         return response_return.get_response()
 
-    def getDataSensor(self):
+    def getDataAllMeter(self):
         response_return = ResponseMessage()
         try:
             conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
-            query = "SELECT tt.* FROM public.meter tt INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime " \
-                    "FROM public.meter GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id " \
-                    "AND tt.time = groupedtt.MaxDateTime"
+            query = """SELECT tt.sensor_id, time, kwh, tap , vab, vbc, vca, freq FROM public.meter tt 
+                        INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime 
+                        FROM public.meter GROUP BY sensor_id) groupedtt ON tt.sensor_id = groupedtt.sensor_id 
+                        AND tt.time = groupedtt.MaxDateTime
+                        union 
+                        SELECT tb.sensor_id, time, kwh, tap , vab, vbc, vca, freq FROM public.mdb tb 
+                        INNER JOIN (SELECT sensor_id, MAX(time) AS MaxDateTime 
+                        FROM public.mdb GROUP BY sensor_id) groupedtt ON tb.sensor_id = groupedtt.sensor_id 
+                        AND tb.time = groupedtt.MaxDateTime"""
             cursor.execute(query)
             records = cursor.fetchall()
             selectObject = []

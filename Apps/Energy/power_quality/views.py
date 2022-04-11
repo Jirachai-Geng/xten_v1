@@ -24,7 +24,7 @@ class AllMeter(APIView):
     def get(request):
         response_return = ResponseMessage()
         try:
-            response_return = PowerQualityService(request=request, token=request.META['HTTP_AUTHORIZATION']).getDataSensor()
+            response_return = PowerQualityService(request=request, token=request.META['HTTP_AUTHORIZATION']).getDataAllMeter()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')

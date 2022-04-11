@@ -66,7 +66,8 @@ class ExploreService:
 
             listParameter = []
             for data in selectObject:
-                listParameter.append(data['column_name'])
+                if data['column_name'] not in ('time','sensor_id'):
+                    listParameter.append(data['column_name'])
 
             response_return.set_success_status(listParameter)
 
@@ -93,7 +94,8 @@ class ExploreService:
 
             listParameter = []
             for data in selectObject:
-                listParameter.append(data['column_name'])
+                if data['column_name'] not in ('time', 'sensor_id'):
+                    listParameter.append(data['column_name'])
 
             response_return.set_success_status(listParameter)
 
