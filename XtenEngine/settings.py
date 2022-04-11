@@ -25,7 +25,7 @@ SECRET_KEY = b'mCKtKwiEo9uJun717pe0mhCYvxh0mkTp_RO--aIj7-I='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['103.13.231.185', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -82,8 +82,7 @@ DATABASES = {
     }
 }
 
-CONNECTION = "postgres://adminxten:xten1234@localhost:5432/xtenv1"
-
+CONNECTION = "postgres://adminXten:xten1234@localhost:5432/xtenv1"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
