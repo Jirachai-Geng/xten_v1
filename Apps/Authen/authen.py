@@ -39,7 +39,7 @@ class AuthenticateService:
                         'rule': selectObject[0]['rule']
                     }
                     result = {
-                        'token': {'token': jwt.encode(payload, SECRET_KEY, algorithm="HS256")},
+                        'token': jwt.encode(payload, SECRET_KEY, algorithm="HS256"),
                         'detail': {
                             'email': selectObject[0]['email'],
                             'username': selectObject[0]['username'],
