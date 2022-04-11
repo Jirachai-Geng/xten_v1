@@ -16,6 +16,7 @@ class Authenticate(APIView):
         request_data = dict()
         request_data['email'] = request.data.get('email', '')
         request_data['password'] = request.data.get('password', '')
+        request_data['username'] = request.data.get('username', '')
         try:
             response_return = AuthenticateService(request=request).login(request_data)
             return Response(response_return)

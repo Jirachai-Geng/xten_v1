@@ -14,20 +14,20 @@ class AuthenticateService:
     @staticmethod
     def login(request_data):
         response_return = ResponseMessage()
-        email = request_data.get('email')
+        email = request_data.get('email', '')
+        username = request_data.get('username', '')
         password = request_data.get('password')
         try:
             conn = psycopg2.connect(CONNECTION)
             cursor = conn.cursor()
-            query = f"SELECT * FROM public.auth_user where email = '{email}'"
+            query = f"SELECT * FROM public.auth_user where email = '{email}' or username = '{username}'"
             cursor.execute(query)
             records = cursor.fetchall()
             selectObject = []
             columnNames = [column[0] for column in cursor.description]
             for record in records:
                 selectObject.append(dict(zip(columnNames, record)))
-            user = columnNames
-            if user:
+            if selectObject:
                 fernet = Fernet(SECRET_KEY)
                 print(type(selectObject[0]['password']))
                 if password == fernet.decrypt(bytes(selectObject[0]['password'])).decode():
@@ -40,7 +40,13 @@ class AuthenticateService:
                     }
                     result = {
                         'token': {'token': jwt.encode(payload, SECRET_KEY, algorithm="HS256")},
-                        'detail': ['id', 'email', 'username', 'project_id', 'rule']
+                        'detail': {
+                            'email': selectObject[0]['email'],
+                            'username': selectObject[0]['username'],
+                            'first_name': selectObject[0]['first_name'],
+                            'last_name': selectObject[0]['last_name'],
+                            'rule': selectObject[0]['rule']
+                        }
                     }
                     response_return.set_success_status(result)
         except Exception as e:
