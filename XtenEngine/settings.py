@@ -82,6 +82,10 @@ DATABASES = {
     }
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://xten-technology.com",
+]
+
 CONNECTION = "postgres://adminXten:xten1234@localhost:5432/xtenv1"
 
 # Password validation
