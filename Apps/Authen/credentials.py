@@ -21,3 +21,5 @@ def AuthenticateCredentials(request_data):
             return selectObject[0]
     except Exception as e:
         response_return.set_error_status('Exception Occurred')
+
+        temp =  {'position': 1, 'name': 'Hydrogen', 'weight': 1.0079, 'symbol': 'H'}

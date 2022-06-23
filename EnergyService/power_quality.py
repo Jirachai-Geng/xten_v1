@@ -62,13 +62,26 @@ class PowerQualityService:
             selectObject = []
             columnNames = [column[0] for column in cursor.description]
 
+            setColumnResponse = []
+            for key in columnNames:
+                keyTemp = {
+                    'columnDef': key,
+                    'header': key.title().replace("_", " "),
+                }
+                setColumnResponse.append(keyTemp)
+
             for record in records:
                 selectObject.append(dict(zip(columnNames, record)))
 
-            response_return.set_success_status(selectObject)
+            response = {
+                'column': setColumnResponse,
+                'value': selectObject
+            }
+
+            response_return.set_success_status(response)
 
         except Exception as e:
-            response_return.set_error_status('Exception Occurred')
+            response_return.set_error_status(F'Exception Occurred {e}')
 
         return response_return.get_response()
 
