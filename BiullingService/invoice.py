@@ -55,7 +55,7 @@ class InvoiceService:
 
             for obj in selectObject:
                 if billing_cycle == "{}/{}".format(now.strftime("%Y"), now.strftime("%m")):
-                    obj['energy_used'] = obj['kwh'] - obj['last_bill']
+                    obj['energy_used'] = obj['kwh'] - obj['energy_start']
                     obj['revenue'] = obj['energy_used'] * obj['unit_price']
                     if obj['leases_type'] == 1:
                         obj['leases_start'] = "{}/{}/01".format(now.strftime("%Y"), now.strftime("%m"))
