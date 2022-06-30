@@ -25,8 +25,28 @@ SECRET_KEY = b'mCKtKwiEo9uJun717pe0mhCYvxh0mkTp_RO--aIj7-I='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['103.13.231.185', 'localhost']
+ALLOWED_HOSTS = ['103.13.231.185', 'localhost', 'xten-technology.com', 'http://xten-technology.com']
+
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = ["accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with"]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -84,9 +104,6 @@ DATABASES = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://xten-technology.com",
-]
 
 CONNECTION = "postgres://adminXten:xten1234@localhost:5432/xtenv1"
 
