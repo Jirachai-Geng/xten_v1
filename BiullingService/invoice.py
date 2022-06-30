@@ -22,8 +22,8 @@ class InvoiceService:
             conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
             if billing_cycle != "{}/{}".format(now.strftime("%Y"), now.strftime("%m")):
-                query = """SELECT id, tenant, name_meter as meter_name, billing_cycle, energy_start as kwh,
-                            energy_end as last_bill, energy_use as energy_used, unit_price, revenue, leases_type
+                query = """SELECT id, tenant, name_meter as meter_name, billing_cycle, energy_start,
+                            energy_end as kwh, energy_use as energy_used, unit_price, revenue, leases_type
                             FROM public.billing_history WHERE billing_cycle LIKE '%{}%';""".format(billing_cycle)
             else:
                 query = """SELECT sensors.name as meter_name, tenant.name as tenant, leases.leases_start, leases.leases_end,
