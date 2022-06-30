@@ -22,5 +22,6 @@ urlpatterns = [
     re_path(r'^', include('Apps.Billing.tenant.urls')),
     re_path(r'^', include('Apps.Billing.leases.urls')),
     re_path(r'^', include('Apps.Billing.invoice.urls')),
+    re_path(r'^', include('Apps.Billing.graph.urls')),
     re_path(r'^', include('Apps.Authen.urls')),
 ]

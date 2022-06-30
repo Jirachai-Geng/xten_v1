@@ -18,24 +18,29 @@ class InvoiceService:
         try:
             conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
-            query = """SELECT sensors.name as meter_name, tenant.name as tenant, 
-                        leases.leases_type, billing_history.energy_end as last_bill, energy.kwh, leases.unit_price
-                        FROM public.leases
-                        INNER JOIN public.sensors
-                        ON leases.sensor_id = sensors.id
-                        INNER JOIN public.tenant
-                        ON leases.tenant_id = tenant.id
-                        INNER JOIN (SELECT tenant, energy_end
-                                    FROM public.billing_history
-                                    order by billing_cycle desc
-                                    limit 1 ) billing_history
-                        ON tenant.name = billing_history.tenant
-                        INNER JOIN (SELECT sensor_id,kwh 
-                                    FROM public.mdb
-                                    ORDER BY time desc    
-                                    LIMIT 1 ) energy
-                        ON sensors.id = energy.sensor_id
-                        """
+            if billing_cycle != '':
+                query = """SELECT id, tenant, name_meter as meter_name, billing_cycle, energy_start as kwh,
+                            energy_end as last_bill, energy_use as energy_used, unit_price, revenue, leases_type
+                            FROM public.billing_history WHERE billing_cycle LIKE '%{}%';""".format(billing_cycle)
+            else:
+                query = """SELECT sensors.name as meter_name, tenant.name as tenant, 
+                            leases.leases_type, billing_history.energy_end as last_bill, energy.kwh, leases.unit_price
+                            FROM public.leases
+                            INNER JOIN public.sensors
+                            ON leases.sensor_id = sensors.id
+                            INNER JOIN public.tenant
+                            ON leases.tenant_id = tenant.id
+                            INNER JOIN (SELECT tenant, energy_end
+                                        FROM public.billing_history
+                                        order by billing_cycle desc
+                                        limit 1 ) billing_history
+                            ON tenant.name = billing_history.tenant
+                            INNER JOIN (SELECT sensor_id,kwh 
+                                        FROM public.mdb
+                                        ORDER BY time desc    
+                                        LIMIT 1 ) energy
+                            ON sensors.id = energy.sensor_id
+                            """
             cursor.execute(query)
             records = cursor.fetchall()
             selectObject = []
@@ -44,13 +49,15 @@ class InvoiceService:
             for record in records:
                 selectObject.append(dict(zip(columnNames, record)))
 
-            for obj in selectObject:
-                obj['energy_used'] = obj['kwh'] - obj['last_bill']
-                obj['revenue'] = obj['energy_used'] * obj['unit_price']
+            if billing_cycle == '':
+                for obj in selectObject:
+                    obj['energy_used'] = obj['kwh'] - obj['last_bill']
+                    obj['revenue'] = obj['energy_used'] * obj['unit_price']
 
             response_return.set_success_status(selectObject)
 
         except Exception as e:
+            print(e)
             response_return.set_error_status('Exception Occurred')
 
         return response_return.get_response()
