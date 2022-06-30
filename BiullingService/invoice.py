@@ -35,7 +35,7 @@ class InvoiceService:
                             ON leases.tenant_id = tenant.id
                             INNER JOIN (SELECT sensor_id, kwh
                                         FROM public.mdb
-                                        WHERE time > '{}'
+                                        WHERE time >= '{}'
                                         order by time asc
                                         LIMIT 1 ) energy_start
                            ON sensors.id = energy_start.sensor_id
