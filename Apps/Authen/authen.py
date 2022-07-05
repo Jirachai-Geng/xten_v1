@@ -36,16 +36,18 @@ class AuthenticateService:
                         'email': selectObject[0]['email'],
                         'username': selectObject[0]['username'],
                         'project_id': selectObject[0]['project_id'],
-                        'rule': selectObject[0]['rule']
+                        'rule': selectObject[0]['rule'],
+                        'logo_url': 'https://drive.google.com/uc?id={}&export=download'.format(selectObject[0]['logo_url'])
                     }
                     result = {
                         'token': jwt.encode(payload, SECRET_KEY, algorithm="HS256"),
-                        'detail': {
+                        'user_info': {
                             'email': selectObject[0]['email'],
                             'username': selectObject[0]['username'],
                             'first_name': selectObject[0]['first_name'],
                             'last_name': selectObject[0]['last_name'],
-                            'rule': selectObject[0]['rule']
+                            'rule': selectObject[0]['rule'],
+                            'logo_url': 'https://drive.google.com/uc?id={}&export=download'.format(selectObject[0]['logo_url'])
                         }
                     }
                     response_return.set_success_status(result)
