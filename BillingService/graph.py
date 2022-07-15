@@ -5,6 +5,7 @@ from XtenEngine.common_util import ResponseMessage
 from Apps.Authen.credentials import AuthenticateCredentials
 from datetime import date, datetime, timedelta
 
+
 class GraphService:
     def __init__(self, **kwargs):
         self.requests = requests
@@ -115,12 +116,11 @@ class GraphService:
             end_time = (datetime.strptime(end_time, '%Y-%m-%d').date() + timedelta(1)).strftime('%Y-%m-%d')
             conn = psycopg2.connect(self.connection)
             cursor = conn.cursor()
-            data = (int(sensor_id), start_time, end_time)
             query = """SELECT trunc(extract(epoch from time )*1000) as time_stm, 
                         to_char(time, 'DD/MM/YYYY HH24:MI:SS') as time,
-                        {} as data FROM {} where sensor_id = %s and time between %s and %s 
-                        order by time desc;""".format(parameter, table)
-            cursor.execute(query, data)
+                        {} as data FROM {} where sensor_id = {} and time between '{}' and '{}' 
+                        order by time_stm desc;""".format(parameter, table, int(sensor_id), start_time, end_time)
+            cursor.execute(query)
             records = cursor.fetchall()
             selectObject = []
             columnNames = [column[0] for column in cursor.description]

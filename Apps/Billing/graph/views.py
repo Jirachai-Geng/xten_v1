@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from BiullingService.graph import GraphService
+from BillingService.graph import GraphService
 from XtenEngine.common_util import ResponseMessage
 
 

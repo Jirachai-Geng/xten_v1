@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from BiullingService.tenant import TenantService
+from BillingService.tenant import TenantService
 from XtenEngine.common_util import ResponseMessage
 
 

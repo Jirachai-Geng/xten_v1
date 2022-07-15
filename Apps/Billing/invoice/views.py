@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from BiullingService.invoice import InvoiceService
+from BillingService.invoice import InvoiceService
 from XtenEngine.common_util import ResponseMessage
 
 
