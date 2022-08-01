@@ -56,3 +56,63 @@ class AuthenticateService:
 
         return response_return.get_response()
 
+    @staticmethod
+    def register(request_data):
+        response_return = ResponseMessage()
+        email = request_data.get('email', '')
+        password = request_data.get('password')
+        first_name = request_data.get('first_name', '')
+        last_name = request_data.get('last_name', '')
+
+        try:
+            conn = psycopg2.connect(CONNECTION)
+            cursor = conn.cursor()
+            query = f"SELECT * FROM public.auth_user where email = '{email}'"
+            cursor.execute(query)
+            records = cursor.fetchall()
+            selectObject = []
+            columnNames = [column[0] for column in cursor.description]
+            for record in records:
+                selectObject.append(dict(zip(columnNames, record)))
+
+            if selectObject:
+                if selectObject[0]['password'] == 'false':
+                    fernet = Fernet(SECRET_KEY)
+                    encPassword = fernet.encrypt(password.encode())
+                    print(type(selectObject[0]['password']))
+                    SQL = f"UPDATE public.auth_user SET password = '{encPassword.decode('ascii')}' " \
+                          f", first_name={first_name}, last_name={last_name} WHERE email = '{email}'"
+                    cursor.execute(SQL)
+                    conn.commit()
+                    cursor.close()
+
+                response_return.set_success_status()
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
+    @staticmethod
+    def canRegister(request_data):
+        response_return = ResponseMessage()
+        userid = request_data.get('userid', '')
+        try:
+            conn = psycopg2.connect(CONNECTION)
+            cursor = conn.cursor()
+            query = f"SELECT * FROM public.auth_user where uuid = '{userid}'"
+            cursor.execute(query)
+            records = cursor.fetchall()
+            selectObject = []
+            columnNames = [column[0] for column in cursor.description]
+
+            for record in records:
+                selectObject.append(dict(zip(columnNames, record)))
+
+            result = {
+                'email': selectObject[0]['email']
+            }
+
+            response_return.set_success_status(result)
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
+        return response_return.get_response()
+
