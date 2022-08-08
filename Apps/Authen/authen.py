@@ -116,3 +116,24 @@ class AuthenticateService:
 
         return response_return.get_response()
 
+    @staticmethod
+    def test(request_data):
+        response_return = ResponseMessage()
+        type = request_data.get('type', '')
+        name = request_data.get('name', '')
+        score = request_data.get('score', '')
+
+        try:
+            conn = psycopg2.connect(CONNECTION)
+            cursor = conn.cursor()
+            SQL = f"INSERT INTO test(type, name, score)VALUES ('{type}', '{name}', {score}) 	" \
+                    f"ON CONFLICT(name) DO UPDATE " \
+                    f"SET type = EXCLUDED.type, score = EXCLUDED.score"
+            cursor.execute(SQL)
+            conn.commit()
+            cursor.close()
+
+            response_return.set_success_status()
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
