@@ -27,7 +27,7 @@ class Authenticate(APIView):
 
 class Register(APIView):
     @staticmethod
-    def post(request):
+    def get(request):
         if not request.data:
             return Response({'Error': "Please provide email/password"}, status="400")
         response_return = ResponseMessage()
@@ -37,6 +37,22 @@ class Register(APIView):
         request_data['username'] = request.data.get('username', '')
         try:
             response_return = AuthenticateService(request=request).register(request_data)
+            return Response(response_return)
+        except Exception:
+            response_return.set_error_status('Exception Occurred')
+            return Response(response_return)
+
+
+class GameShare(APIView):
+    @staticmethod
+    def get(request):
+        if not request.data:
+            return Response({'Error': "something wrong"}, status="400")
+        response_return = ResponseMessage()
+        request_data = dict()
+        request_data['score'] = request.data.get('score', '')
+        try:
+            response_return = AuthenticateService(request=request).testShare(request_data)
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')

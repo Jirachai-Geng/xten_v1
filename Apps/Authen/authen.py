@@ -137,3 +137,52 @@ class AuthenticateService:
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
 
+    @staticmethod
+    def testShare(request_data):
+        response_return = ResponseMessage()
+        score = request_data.get('score', '')
+        try:
+            html = """<!DOCTYPE html>
+                        <html lang="en">
+                         <head>
+                                <meta charset="UTF-8">
+                                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <meta property="og:title" content="European Travel Destinations">
+                                <meta property="og:type" content="article" />
+                                <meta property="og:description" content="Offering tour packages for individuals or groups. score = {}">
+                                <meta property="og:image" content="http://euro-travel-example.com/thumbnail.jpg">
+                                <meta property="og:url" content="http://euro-travel-example.com/index.htm">
+                            
+                                <title>AppName</title>
+                            </head>
+                         <body>
+                         </body>
+                        </html>""".format(score)
+
+            response_return.set_success_status(html)
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
+
+    @staticmethod
+    def testGetScore(request_data):
+        response_return = ResponseMessage()
+        type = request_data.get('type', '')
+        name = request_data.get('name', '')
+        score = request_data.get('score', '')
+
+        try:
+            conn = psycopg2.connect(CONNECTION)
+            cursor = conn.cursor()
+            SQL = f"INSERT INTO test(type, name, score)VALUES ('{type}', '{name}', {score}) 	" \
+                    f"ON CONFLICT(name) DO UPDATE " \
+                    f"SET type = EXCLUDED.type, score = EXCLUDED.score"
+            cursor.execute(SQL)
+            conn.commit()
+            cursor.close()
+
+            response_return.set_success_status()
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
