@@ -60,11 +60,10 @@ class GameShare(APIView):
                                             <meta charset="UTF-8">
                                             <meta http-equiv="X-UA-Compatible" content="IE=edge">
                                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                            <meta property="og:title" content="European Travel Destinations">
+                                            <meta property="og:title" content=" title text score = {}">
                                             <meta property="og:type" content="article" />
-                                            <meta property="og:description" content="Offering tour packages for individuals or groups. score = {}">
-                                            <meta property="og:image" content="http://euro-travel-example.com/thumbnail.jpg">
-                                            <meta property="og:url" content="http://euro-travel-example.com/index.htm">
+                                            <meta property="og:description" content="description text">
+                                            <meta property="og:image" content="https://picsum.photos/200">
 
                                             <title>AppName</title>
                                         </head>
@@ -90,6 +89,18 @@ class GameScore(APIView):
         request_data['score'] = request.data.get('score', '')
         try:
             response_return = AuthenticateService(request=request).test(request_data)
+            return Response(response_return)
+        except Exception:
+            response_return.set_error_status('Exception Occurred')
+            return Response(response_return)
+
+
+class GameGetScore(APIView):
+    @staticmethod
+    def get(request):
+        response_return = ResponseMessage()
+        try:
+            response_return = AuthenticateService(request=request).testGetScore()
             return Response(response_return)
         except Exception:
             response_return.set_error_status('Exception Occurred')

@@ -8,4 +8,5 @@ urlpatterns = [
     re_path(r'^api/v1/canRegis/?$', views.CanRegister.as_view()),
     re_path(r'^api/v1/gamescore', views.GameScore.as_view()),
     re_path(r'^api/v1/share/?$', views.GameShare.as_view()),
+    re_path(r'^api/v1/score', views.GameGetScore.as_view()),
 ]
