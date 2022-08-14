@@ -25,7 +25,8 @@ SECRET_KEY = b'mCKtKwiEo9uJun717pe0mhCYvxh0mkTp_RO--aIj7-I='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['103.13.231.185', 'localhost', 'xten-technology.com', 'http://xten-technology.com']
+# ALLOWED_HOSTS = ['103.13.231.185', 'localhost', 'xten-technology.com', 'http://xten-technology.com']
+ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_ALLOW_ALL = True
 

@@ -137,6 +137,8 @@ class AuthenticateService:
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
 
+        return response_return.get_response()
+
     @staticmethod
     def testShare(request_data):
         response_return = ResponseMessage()
@@ -163,6 +165,7 @@ class AuthenticateService:
             response_return.set_success_status(html)
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
+        return response_return.get_response()
 
 
     @staticmethod
@@ -185,4 +188,6 @@ class AuthenticateService:
             response_return.set_success_status()
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
+
+        return response_return.get_response()
 

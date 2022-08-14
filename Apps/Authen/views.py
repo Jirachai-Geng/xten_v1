@@ -1,10 +1,14 @@
 from django.http import JsonResponse
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from XtenEngine.common_util import ResponseMessage
 from .authen import AuthenticateService
+from django.http import HttpResponse
+from django.template import Context, loader
+from rest_framework.renderers import TemplateHTMLRenderer
 
 
 class Authenticate(APIView):
@@ -46,14 +50,29 @@ class Register(APIView):
 class GameShare(APIView):
     @staticmethod
     def get(request):
-        if not request.data:
-            return Response({'Error': "something wrong"}, status="400")
         response_return = ResponseMessage()
         request_data = dict()
-        request_data['score'] = request.data.get('score', '')
+        request_data['score'] = request.GET.get('score', '')
         try:
-            response_return = AuthenticateService(request=request).testShare(request_data)
-            return Response(response_return)
+            # response_return = AuthenticateService(request=request).testShare(request_data)
+            html = """<html lang="en">
+                                     <head>
+                                            <meta charset="UTF-8">
+                                            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                            <meta property="og:title" content="European Travel Destinations">
+                                            <meta property="og:type" content="article" />
+                                            <meta property="og:description" content="Offering tour packages for individuals or groups. score = {}">
+                                            <meta property="og:image" content="http://euro-travel-example.com/thumbnail.jpg">
+                                            <meta property="og:url" content="http://euro-travel-example.com/index.htm">
+
+                                            <title>AppName</title>
+                                        </head>
+                                     <body>
+                                     </body>
+                                    </html>""".format(request_data['score'])
+            return HttpResponse(html)
+            # return Response(html)
         except Exception:
             response_return.set_error_status('Exception Occurred')
             return Response(response_return)
