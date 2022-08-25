@@ -84,10 +84,7 @@ class GameScore(APIView):
         if not request.data:
             return Response({'Error': "something wrong"}, status="400")
         response_return = ResponseMessage()
-        request_data = dict()
-        request_data['type'] = request.data.get('type', '')
-        request_data['name'] = request.data.get('name', '')
-        request_data['score'] = request.data.get('score', '')
+        request_data = request.data.get("data")
         try:
             response_return = AuthenticateService(request=request).test(request_data)
             return Response(response_return)

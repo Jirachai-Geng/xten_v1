@@ -5,7 +5,7 @@ from XtenEngine.settings import CONNECTION, SECRET_KEY
 from XtenEngine.common_util import ResponseMessage
 import jwt
 from cryptography.fernet import Fernet
-
+import json
 
 class AuthenticateService:
     def __init__(self, **kwargs):
@@ -121,9 +121,11 @@ class AuthenticateService:
     @staticmethod
     def test(request_data):
         response_return = ResponseMessage()
-        type = request_data.get('type', '')
-        name = request_data.get('name', '')
-        score = request_data.get('score', '')
+        json_acceptable_string = request_data.replace("'", "\"")
+        d = json.loads(json_acceptable_string)
+        type = d.get('type', '')
+        name = d.get('name', '')
+        score = d.get('score', '')
 
         try:
             conn = psycopg2.connect(CONNECTION)
