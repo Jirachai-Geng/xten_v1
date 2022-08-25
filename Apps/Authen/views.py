@@ -31,14 +31,15 @@ class Authenticate(APIView):
 
 class Register(APIView):
     @staticmethod
-    def get(request):
+    def post(request):
         if not request.data:
             return Response({'Error': "Please provide email/password"}, status="400")
         response_return = ResponseMessage()
         request_data = dict()
         request_data['email'] = request.data.get('email', '')
         request_data['password'] = request.data.get('password', '')
-        request_data['username'] = request.data.get('username', '')
+        request_data['first_name'] = request.data.get('first_name', '')
+        request_data['last_name'] = request.data.get('last_name', '')
         try:
             response_return = AuthenticateService(request=request).register(request_data)
             return Response(response_return)

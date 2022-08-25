@@ -76,12 +76,13 @@ class AuthenticateService:
                 selectObject.append(dict(zip(columnNames, record)))
 
             if selectObject:
-                if selectObject[0]['password'] == 'false':
+                if selectObject[0]['change_pass']:
                     fernet = Fernet(SECRET_KEY)
                     encPassword = fernet.encrypt(password.encode())
                     print(type(selectObject[0]['password']))
                     SQL = f"UPDATE public.auth_user SET password = '{encPassword.decode('ascii')}' " \
-                          f", first_name={first_name}, last_name={last_name} WHERE email = '{email}'"
+                          f", first_name='{first_name}', last_name='{last_name}', change_pass=false " \
+                          f"WHERE email = '{email}'"
                     cursor.execute(SQL)
                     conn.commit()
                     cursor.close()
@@ -89,6 +90,7 @@ class AuthenticateService:
                 response_return.set_success_status()
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
+        return response_return.get_response()
 
     @staticmethod
     def canRegister(request_data):
@@ -185,8 +187,9 @@ class AuthenticateService:
             index = 0
             result = []
             for object in selectObject:
+                index = index + 1
                 temp = {
-                    'id': index+1,
+                    'id': index,
                     'fullName': object['name'],
                     'score': object['score'],
                 }
