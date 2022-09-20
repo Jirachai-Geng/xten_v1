@@ -56,6 +56,22 @@ class AuthenticateService:
 
         return response_return.get_response()
 
+
+    @staticmethod
+    def loginTEST(request_data):
+        response_return = ResponseMessage()
+        username = request_data.get('username', '')
+        password = request_data.get('password')
+        try:
+            if username == "userxten" and password == "x10tech":
+                response_return.set_success_status("Hi!!, Welcome to XTEN")
+            else:
+                response_return.set_error_status('invalid username or password')
+        except Exception as e:
+            response_return.set_error_status('Exception Occurred')
+
+        return response_return.get_response()
+
     @staticmethod
     def register(request_data):
         response_return = ResponseMessage()

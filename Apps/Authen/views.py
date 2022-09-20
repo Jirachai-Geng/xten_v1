@@ -29,6 +29,23 @@ class Authenticate(APIView):
             return Response(response_return)
 
 
+class AuthenticateTEST(APIView):
+    @staticmethod
+    def post(request):
+        if not request.data:
+            return Response({'Error': "Please provide username/password"}, status="400")
+        response_return = ResponseMessage()
+        request_data = dict()
+        request_data['password'] = request.data.get('password', '')
+        request_data['username'] = request.data.get('username', '')
+        try:
+            response_return = AuthenticateService(request=request).loginTEST(request_data)
+            return Response(response_return)
+        except Exception:
+            response_return.set_error_status('Exception Occurred')
+            return Response(response_return)
+
+
 class Register(APIView):
     @staticmethod
     def post(request):
