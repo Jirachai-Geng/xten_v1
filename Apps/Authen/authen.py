@@ -66,7 +66,7 @@ class AuthenticateService:
             if username == "userxten" and password == "x10tech":
                 response_return.set_success_status("Hi!!, Welcome to XTEN")
             else:
-                response_return.set_error_status('invalid username or password')
+                response_return.set_invalid_status('Invalid username or password')
         except Exception as e:
             response_return.set_error_status('Exception Occurred')
 
