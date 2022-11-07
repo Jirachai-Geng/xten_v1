@@ -20,4 +20,4 @@ def AuthenticateCredentials(request_data):
                 selectObject.append(dict(zip(columnNames, record)))
             return selectObject[0]
     except Exception as e:
-        response_return.set_error_status('Exception Occurred')
+        response_return.set_error_status('Exception Occurred {}'.format(e))

@@ -35,9 +35,11 @@ class AuthenticateService:
                         'id': selectObject[0]['id'],
                         'email': selectObject[0]['email'],
                         'username': selectObject[0]['username'],
+                        'first_name': selectObject[0]['first_name'],
+                        'last_name': selectObject[0]['last_name'],
                         'project_id': selectObject[0]['project_id'],
                         'rule': selectObject[0]['rule'],
-                        'logo_url': 'https://drive.google.com/uc?id={}&export=download'.format(selectObject[0]['logo_url'])
+                        'logo_url': selectObject[0]['logo_url']
                     }
                     result = {
                         'token': jwt.encode(payload, SECRET_KEY, algorithm="HS256"),
@@ -47,7 +49,7 @@ class AuthenticateService:
                             'first_name': selectObject[0]['first_name'],
                             'last_name': selectObject[0]['last_name'],
                             'rule': selectObject[0]['rule'],
-                            'logo_url': 'https://drive.google.com/uc?id={}&export=download'.format(selectObject[0]['logo_url'])
+                            'logo_url': selectObject[0]['logo_url']
                         }
                     }
                     response_return.set_success_status(result)
@@ -55,7 +57,6 @@ class AuthenticateService:
             response_return.set_error_status('Exception Occurred')
 
         return response_return.get_response()
-
 
     @staticmethod
     def loginTEST(request_data):
@@ -135,87 +136,38 @@ class AuthenticateService:
         return response_return.get_response()
 
     @staticmethod
-    def test(request_data):
+    def verifyToken(request_data):
         response_return = ResponseMessage()
-        json_acceptable_string = request_data.replace("'", "\"")
-        d = json.loads(json_acceptable_string)
-        type = d.get('type', '')
-        name = d.get('name', '')
-        score = d.get('score', '')
-
+        token = request_data.get('token', '')
+        decoded = jwt.decode(token, SECRET_KEY, algorithms="HS256")
         try:
-            conn = psycopg2.connect(CONNECTION)
-            cursor = conn.cursor()
-            SQL = f"INSERT INTO test(type, name, score)VALUES ('{type}', '{name}', {score}) 	" \
-                    f"ON CONFLICT(name) DO UPDATE " \
-                    f"SET type = EXCLUDED.type, score = EXCLUDED.score"
-            cursor.execute(SQL)
-            conn.commit()
-            cursor.close()
-
-            response_return.set_success_status()
+            if decoded:
+                conn = psycopg2.connect(CONNECTION)
+                cursor = conn.cursor()
+                query = f"SELECT * FROM public.auth_project where id = {decoded['project_id']}"
+                cursor.execute(query)
+                records = cursor.fetchall()
+                selectObject = []
+                columnNames = [column[0] for column in cursor.description]
+                for record in records:
+                    selectObject.append(dict(zip(columnNames, record)))
+                if selectObject:
+                    result = {
+                        'token': token,
+                        'user_info': {
+                            'project_id': decoded['project_id'],
+                            'email': decoded['email'],
+                            'username': decoded['username'],
+                            'first_name': decoded['first_name'],
+                            'last_name': decoded['last_name'],
+                            'rule': decoded['rule'],
+                            'logo_url': decoded['logo_url']
+                        }
+                    }
+                    response_return.set_success_status(result)
+                else:
+                    response_return.set_error_status('Data not found')
         except Exception as e:
-            response_return.set_error_status('Exception Occurred')
+            response_return.set_error_status('Exception Occurred {}'.format(e))
 
         return response_return.get_response()
-
-    @staticmethod
-    def testShare(request_data):
-        response_return = ResponseMessage()
-        score = request_data.get('score', '')
-        try:
-            html = """<!DOCTYPE html>
-                        <html lang="en">
-                         <head>
-                                <meta charset="UTF-8">
-                                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                <meta property="og:title" content="European Travel Destinations">
-                                <meta property="og:type" content="article" />
-                                <meta property="og:description" content="Offering tour packages for individuals or groups. score = {}">
-                                <meta property="og:image" content="http://euro-travel-example.com/thumbnail.jpg">
-                                <meta property="og:url" content="http://euro-travel-example.com/index.htm">
-                            
-                                <title>AppName</title>
-                            </head>
-                         <body>
-                         </body>
-                        </html>""".format(score)
-
-            response_return.set_success_status(html)
-        except Exception as e:
-            response_return.set_error_status('Exception Occurred')
-        return response_return.get_response()
-
-
-    @staticmethod
-    def testGetScore():
-        response_return = ResponseMessage()
-        try:
-            conn = psycopg2.connect(CONNECTION)
-            cursor = conn.cursor()
-            query = """SELECT type, score, name FROM public.test order by score desc;"""
-            cursor.execute(query)
-            records = cursor.fetchall()
-            selectObject = []
-            columnNames = [column[0] for column in cursor.description]
-
-            for record in records:
-                selectObject.append(dict(zip(columnNames, record)))
-            index = 0
-            result = []
-            for object in selectObject:
-                index = index + 1
-                temp = {
-                    'id': index,
-                    'fullName': object['name'],
-                    'score': object['score'],
-                }
-                result.append(temp)
-
-            response_return.set_success_status(result)
-        except Exception as e:
-            response_return.set_error_status('Exception Occurred')
-
-        return response_return.get_response()
-
